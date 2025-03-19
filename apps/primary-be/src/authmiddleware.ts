@@ -1,5 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { decode } from "next-auth/jwt";
+import dotenv from 'dotenv';
+dotenv.config();
 
 export const AuthMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -17,6 +19,7 @@ export const AuthMiddleware = async (req: Request, res: Response, next: NextFunc
         if(!secret) throw new Error("NEXTAUTH_SECRET is missing")
 
         const decodedToken = await decode({ token, secret});
+        console.log(decodedToken)
 
         if(!decodedToken) {
             res.status(401).json({

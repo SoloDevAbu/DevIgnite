@@ -15,7 +15,7 @@ export const authOption = {
     callbacks: {
         async jwt({token, account, profile}: {token: any; account: Account; profile: Profile}) {
             try {
-                if(!account?.provider && profile) {
+                if(account?.provider) {
                     const user = await db.user.findFirst({
                         where: {
                             OR: [
@@ -28,24 +28,19 @@ export const authOption = {
                             ]
                         },
                         select: {
-                            id: true,
-                            provider_id: true,
-                            email: true
+                            id: true
                         }
                     })
 
                     if(user) {
-                        return {
-                            ...token,
-                            dbUserId: user.id.toString(),
-                            providerId: user.provider_id
-                        }
+                        token.dbUserId = user.id.toString()
                     }
                 }
 
                 return token
             } catch (error) {
                 console.error("JWT callback error: ", error)
+                return token
             }
         },
 
