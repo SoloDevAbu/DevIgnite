@@ -2,9 +2,11 @@ import cors from 'cors';
 import express from 'express';
 import db from "@repo/db/client";
 import { GoogleGenerativeAI } from "@google/generative-ai"
-import { systemPrompt } from './systemPrompt';
-import { ArtifactProcessor } from './parser';
-import { onFileUpdate, onShellCommand } from './os';
+import { systemPrompt } from '../systemPrompt';
+import { ArtifactProcessor } from '../parser';
+import { onFileUpdate, onShellCommand } from '../os';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const app = express();
 app.use(cors());
@@ -108,6 +110,6 @@ app.post('/prompt', async (req, res) => {
     }
 })
 
-app.listen(9090), () => {
+app.listen(9090, () => {
     console.log('Worker is running on port 9090');
-}
+});
