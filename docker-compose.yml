@@ -1,0 +1,28 @@
+version: '3'
+services:
+  worker:
+    build: 
+      context: .
+      dockerfile: ./apps/worker/Dockerfile
+    env_file:
+      - .env
+    environment:
+      - WORKER_DIR=/workspace
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    volumes:
+      - workspace-data:/workspace
+    ports:
+      - "9090:9090"
+
+  code-server:
+    build: 
+      context: ./apps/code-server
+    volumes:
+      - workspace-data:/workspace
+    ports:
+      - "8080:8080"
+    depends_on:
+      - worker
+
+volumes:
+  workspace-data:

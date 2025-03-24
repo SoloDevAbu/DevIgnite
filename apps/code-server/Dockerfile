@@ -9,8 +9,15 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+# Create and set permissions for workspace
+RUN mkdir -p /workspace && chown -R coder:coder /workspace
+
 USER coder
 
 EXPOSE 8080
 
-CMD [ "code-server", "--auth", "none", "--bind-addr", "0.0.0.0:8080", "/temp/bolty-worker"]
+# Use the workspace directory
+CMD [ "code-server", "--auth", "none", "--bind-addr", "0.0.0.0:8080", "/workspace"]
+
+# Add a VOLUME instruction
+VOLUME [ "/workspace" ]

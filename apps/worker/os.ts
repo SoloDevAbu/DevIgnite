@@ -2,7 +2,7 @@ import db from "@repo/db/client";
 import * as fs from 'fs/promises';
 import { execSync } from 'child_process';
 import * as path from 'path';
-const BASE_WORKER_DIR = "/temp/bolty-worker";
+const BASE_WORKER_DIR = process.env.WORKER_DIR || "/workspace";
 
 async function initialize() {
     try {
@@ -17,9 +17,14 @@ async function initialize() {
 })();
 
 export async function onFileUpdate(filePath: string, fileContent: string) {
-    const fullPath = path.join(BASE_WORKER_DIR, filePath);
-    await fs.mkdir(path.dirname(fullPath), { recursive: true });
-    await fs.writeFile(fullPath, fileContent);
+    try {
+        const fullPath = path.join(BASE_WORKER_DIR, filePath);
+        await fs.mkdir(path.dirname(fullPath), { recursive: true });
+        await fs.writeFile(fullPath, fileContent);
+        console.log(`File written successfully: ${fullPath}`);
+    } catch (error) {
+        console.error(`Error writing file ${filePath}:`, error);
+    }
 }
 
 export async function onShellCommand(shellCommand: string) {
